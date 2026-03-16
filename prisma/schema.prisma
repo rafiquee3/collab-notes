@@ -1,0 +1,40 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User { 
+  id String @id @default(cuid()) 
+  email String @unique
+  name String? 
+  image String? 
+  workspaces Workspace[] 
+  createdAt DateTime @default(now()) 
+}
+
+model Workspace { 
+  id String @id @default(cuid()) 
+  name String 
+  ownerId String 
+  owner User @relation(fields: [ownerId], references: [id]) 
+  notes Note[] 
+} 
+
+model Note { 
+  id String @id @default(cuid()) 
+  title String @default("Untitled") 
+  content Json? // Tiptap JSON format
+  workspaceId String 
+  workspace Workspace @relation(fields: [workspaceId], references: [id])
+  updatedAt DateTime @updatedAt 
+  createdAt DateTime @default(now()) 
+}
