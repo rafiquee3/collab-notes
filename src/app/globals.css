@@ -1,26 +1,42 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans);
+  
+  --color-background: #F8F9FA;
+  --color-surface: #FFFFFF;
+  --color-foreground: #1A1A1A;
+  --color-accent: #4A5568;
+  --color-border: #E2E8F0;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
+  body {
+    @apply bg-background text-foreground selection:bg-accent/10;
+    font-feature-settings: "ss01", "ss02", "cv01", "cv11";
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  h1, h2, h3, h4 {
+    @apply font-serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer components {
+  .studio-card {
+    @apply bg-surface border border-border p-6 transition-all duration-300;
+  }
+  
+  .studio-button {
+    @apply border border-foreground bg-foreground text-background px-4 py-2 text-sm uppercase tracking-wider transition-all hover:bg-background hover:text-foreground;
+  }
+
+  .studio-button-outline {
+    @apply border border-border px-4 py-2 text-sm uppercase tracking-wider transition-all hover:border-foreground;
+  }
+
+  .studio-input {
+    @apply border border-border bg-surface px-4 py-2 text-sm focus:outline-none focus:border-foreground transition-all;
+  }
 }
+
