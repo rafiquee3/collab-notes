@@ -3,12 +3,12 @@
 @theme {
   --font-serif: var(--font-serif);
   --font-sans: var(--font-sans);
-  
-  --color-background: #F8F9FA;
-  --color-surface: #FFFFFF;
-  --color-foreground: #1A1A1A;
-  --color-accent: #4A5568;
-  --color-border: #E2E8F0;
+
+  --color-background: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-foreground: #1a1a1a;
+  --color-accent: #4a5568;
+  --color-border: #e2e8f0;
 }
 
 @layer base {
@@ -17,66 +17,78 @@
     font-feature-settings: "ss01", "ss02", "cv01", "cv11";
   }
 
-  h1, h2, h3, h4 {
+  h1,
+  h2,
+  h3,
+  h4 {
     @apply font-serif;
   }
 }
 
 @layer components {
   .studio-card {
-    @apply bg-surface border border-border p-6 transition-all duration-300;
+    @apply bg-surface border-border border p-6 transition-all duration-300;
   }
-  
+
   .studio-button {
-    @apply border border-foreground bg-foreground text-background px-4 py-2 text-sm uppercase tracking-wider transition-all hover:bg-background hover:text-foreground;
+    @apply border-foreground bg-foreground text-background hover:bg-background hover:text-foreground border px-4 py-2 text-sm tracking-wider uppercase transition-all;
   }
 
   .studio-button-outline {
-    @apply border border-border px-4 py-2 text-sm uppercase tracking-wider transition-all hover:border-foreground;
+    @apply border-border hover:border-foreground border px-4 py-2 text-sm tracking-wider uppercase transition-all;
   }
 
   .studio-input {
-    @apply border border-border bg-surface px-4 py-2 text-sm focus:outline-none focus:border-foreground transition-all;
+    @apply border-border bg-surface focus:border-foreground border px-4 py-2 text-sm transition-all focus:outline-none;
   }
 
   .tiptap-editor {
-    @apply outline-none pt-12 lg:pt-20;
+    @apply pt-12 outline-none lg:pt-20;
   }
 
   .tiptap-editor h1 {
-    @apply font-serif text-5xl lg:text-7xl mb-12 font-normal leading-tight;
+    @apply mb-12 font-serif text-5xl leading-tight font-normal lg:text-7xl;
   }
 
   .tiptap-editor h2 {
-    @apply font-serif text-3xl lg:text-5xl mb-8 font-normal leading-tight;
+    @apply mb-8 font-serif text-3xl leading-tight font-normal lg:text-5xl;
   }
 
   .tiptap-editor h3 {
-    @apply font-serif text-xl lg:text-3xl mb-6 font-normal uppercase tracking-widest;
+    @apply mb-6 font-serif text-xl font-normal tracking-widest uppercase lg:text-3xl;
   }
 
   .tiptap-editor p {
-    @apply text-base lg:text-lg mb-6 leading-relaxed text-accent/90;
+    @apply text-accent/90 mb-6 text-base leading-relaxed lg:text-lg;
   }
 
-  .tiptap-editor ul {
-    @apply list-disc list-inside mb-6 space-y-2;
+  .tiptap-editor ul:not([data-type="taskList"]):not([data-type="task-list"]) {
+    @apply list-outside mb-6 ml-8 space-y-2;
+    list-style-type: disc;
   }
 
   .tiptap-editor ol {
-    @apply list-decimal list-inside mb-6 space-y-2;
+    @apply list-outside mb-6 ml-8 space-y-2;
+    list-style-type: decimal;
+  }
+
+  /* Universal fix for ALL list item children to be inline with markers/checkboxes */
+  .tiptap-editor li > p,
+  .tiptap-editor li > div > p {
+    margin: 0 !important;
+    display: inline !important;
   }
 
   .tiptap-editor blockquote {
-    @apply border-l-2 border-border pl-6 italic mb-6;
+    @apply border-border mb-6 border-l-2 pl-6 italic;
   }
 
   .tiptap-editor pre {
-    @apply bg-surface border border-border p-6 mb-8 font-mono text-sm leading-relaxed overflow-x-auto;
+    @apply bg-surface border-border mb-8 overflow-x-auto border p-6 font-mono text-sm leading-relaxed;
   }
 
   .tiptap-editor pre code {
-    @apply bg-transparent p-0 text-inherit font-mono;
+    @apply bg-transparent p-0 font-mono text-inherit;
   }
 
   /* Syntax Highlighting Colors */
@@ -87,7 +99,7 @@
 
   .hljs-keyword,
   .hljs-selector-tag {
-    @apply text-indigo-700 font-medium;
+    @apply font-medium text-indigo-700;
   }
 
   .hljs-string,
@@ -132,3 +144,85 @@
   }
 }
 
+/* 
+   TASK LIST UNIFIED FIX 
+   Targets: [data-type="taskList"], [data-type="task-list"], [data-type="taskItem"], [data-type="task-item"]
+*/
+.tiptap-editor ul[data-type="taskList"],
+.tiptap-editor ul[data-type="task-list"] {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin-bottom: 2rem !important;
+}
+
+.tiptap-editor li[data-type="taskItem"],
+.tiptap-editor li[data-type="task-item"],
+.tiptap-editor li:has(input[type="checkbox"]) {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 0.75rem !important;
+  margin-bottom: 0.5rem !important;
+  list-style: none !important;
+}
+
+/* Aggressively hide any markers/bullets */
+.tiptap-editor li[data-type="taskItem"]::marker,
+.tiptap-editor li[data-type="task-item"]::marker,
+.tiptap-editor li:has(input[type="checkbox"])::marker {
+  display: none !important;
+  content: "" !important;
+}
+
+.tiptap-editor li[data-type="taskItem"] > label,
+.tiptap-editor li[data-type="task-item"] > label {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  user-select: none;
+  margin: 0;
+  padding: 0;
+  padding-top: 4px; /* Align with text baseline */
+}
+
+.tiptap-editor li[data-type="taskItem"] > div,
+.tiptap-editor li[data-type="task-item"] > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.tiptap-editor input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid var(--color-border);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+  margin: 0 !important;
+}
+
+.tiptap-editor input[type="checkbox"]:checked {
+  background-color: var(--color-foreground);
+  border-color: var(--color-foreground);
+}
+
+.tiptap-editor input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 0.25rem;
+  top: 0.1rem;
+  width: 0.4rem;
+  height: 0.7rem;
+  border-right: 2px solid var(--color-background);
+  border-bottom: 2px solid var(--color-background);
+  transform: rotate(45deg);
+}
+
+.tiptap-editor li[data-checked="true"] > div {
+  text-decoration: line-through;
+  opacity: 0.5;
+}

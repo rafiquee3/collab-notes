@@ -46,6 +46,12 @@ export function Toolbar({ editor }: ToolbarProps) {
       action: () => editor.chain().focus().toggleOrderedList().run(),
       isActive: editor.isActive("orderedList"),
     },
+    {
+      label: "Tasks",
+      title: "Task List",
+      action: () => editor.chain().focus().toggleTaskList().run(),
+      isActive: editor.isActive("taskList"),
+    },
   ];
 
   const handleHeadingChange = (level: number) => {
