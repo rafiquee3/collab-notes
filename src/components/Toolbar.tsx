@@ -48,8 +48,47 @@ export function Toolbar({ editor }: ToolbarProps) {
     },
   ];
 
+  const handleHeadingChange = (level: number) => {
+    if (level === 0) {
+      editor.chain().focus().setParagraph().run();
+    } else {
+      editor
+        .chain()
+        .focus()
+        .toggleHeading({ level: level as any })
+        .run();
+    }
+  };
+
+  const currentHeading = editor.isActive("heading", { level: 1 })
+    ? 1
+    : editor.isActive("heading", { level: 2 })
+      ? 2
+      : editor.isActive("heading", { level: 3 })
+        ? 3
+        : 0;
+
   return (
     <div className="border-border bg-background/50 sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b p-2 backdrop-blur-sm">
+      <select
+        value={currentHeading}
+        onChange={(e) => handleHeadingChange(parseInt(e.target.value))}
+        className="border-border text-accent hover:border-border hover:bg-border/10 hover:text-foreground h-8 border bg-transparent px-2 text-xs font-medium transition-colors outline-none"
+      >
+        <option value={0} className="bg-background">
+          Paragraph
+        </option>
+        <option value={1} className="bg-background text-lg font-bold">
+          Heading 1
+        </option>
+        <option value={2} className="bg-background text-base font-bold">
+          Heading 2
+        </option>
+        <option value={3} className="bg-background text-sm font-bold">
+          Heading 3
+        </option>
+      </select>
+
       {buttons.map((btn) => (
         <button
           key={btn.title}
@@ -58,7 +97,7 @@ export function Toolbar({ editor }: ToolbarProps) {
           className={`flex h-8 min-w-[32px] items-center justify-center border px-2 text-xs font-medium transition-colors ${
             btn.isActive
               ? "border-border bg-border/20 text-foreground"
-              : "border-transparent text-accent hover:border-border hover:bg-border/10 hover:text-foreground"
+              : "text-accent hover:border-border hover:bg-border/10 hover:text-foreground border-transparent"
           }`}
         >
           {btn.label}

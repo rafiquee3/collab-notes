@@ -38,5 +38,41 @@
   .studio-input {
     @apply border border-border bg-surface px-4 py-2 text-sm focus:outline-none focus:border-foreground transition-all;
   }
+
+  .tiptap-editor {
+    @apply outline-none pt-12 lg:pt-20;
+  }
+
+  .tiptap-editor h1 {
+    @apply font-serif text-5xl lg:text-7xl mb-12 font-normal leading-tight;
+  }
+
+  .tiptap-editor h2 {
+    @apply font-serif text-3xl lg:text-5xl mb-8 font-normal leading-tight;
+  }
+
+  .tiptap-editor h3 {
+    @apply font-serif text-xl lg:text-3xl mb-6 font-normal uppercase tracking-widest;
+  }
+
+  .tiptap-editor p {
+    @apply text-base lg:text-lg mb-6 leading-relaxed text-accent/90;
+  }
+
+  .tiptap-editor ul {
+    @apply list-disc list-inside mb-6 space-y-2;
+  }
+
+  .tiptap-editor ol {
+    @apply list-decimal list-inside mb-6 space-y-2;
+  }
+
+  .tiptap-editor blockquote {
+    @apply border-l-2 border-border pl-6 italic mb-6;
+  }
+
+  .tiptap-editor pre {
+    @apply bg-surface border border-border p-4 mb-6 font-mono text-xs overflow-x-auto;
+  }
 }
 
