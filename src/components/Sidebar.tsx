@@ -4,7 +4,13 @@ import { useState } from "react";
 import { useSession, signOut } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 
-export function Sidebar() {
+export function Sidebar({
+  activeNoteId,
+  onNoteSelect,
+}: {
+  activeNoteId?: string | null;
+  onNoteSelect: (id: string) => void;
+}) {
   const { data: session } = useSession();
   const [selectedWorkspaceId, setSelectedWorkspaceId] = useState<string | null>(
     null
@@ -200,7 +206,14 @@ export function Sidebar() {
               <ul className="space-y-1">
                 {notes?.map((note: { id: string; title: string | null }) => (
                   <li key={note.id}>
-                    <button className="text-accent hover:border-border hover:bg-border/10 hover:text-foreground w-full truncate border border-transparent px-3 py-2 text-left text-sm transition-all transition-colors">
+                    <button
+                      onClick={() => onNoteSelect(note.id)}
+                      className={`text-accent hover:border-border hover:bg-border/10 hover:text-foreground w-full truncate border px-3 py-2 text-left text-sm transition-all transition-colors ${
+                        activeNoteId === note.id
+                          ? "border-border bg-border/20 text-foreground"
+                          : "border-transparent"
+                      }`}
+                    >
                       {note.title || "Untitled"}
                     </button>
                   </li>

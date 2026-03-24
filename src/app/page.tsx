@@ -1,11 +1,13 @@
 "use client";
-
+import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
 import { trpc } from "@/utils/trpc";
 import { Sidebar } from "@/components/Sidebar";
+import { Editor } from "@/components/Editor";
 
 export default function Home() {
   const { data: session } = useSession();
+  const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const { isLoading } = trpc.getUser.useQuery("User123");
 
   if (isLoading)
@@ -35,25 +37,32 @@ export default function Home() {
 
   return (
     <div className="bg-background flex min-h-screen">
-      <Sidebar />
-      <div className="min-h-screen flex-1 overflow-y-auto p-8 lg:p-16">
-        {/* Header */}
-        <header className="border-border mb-16 flex items-baseline justify-between border-b pb-8">
-          <div>
-            <h1 className="font-serif text-5xl lg:text-7xl">Your Workspace</h1>
-            <p className="text-accent mt-2 text-sm tracking-widest uppercase">
-              {new Date().toLocaleDateString("en-US", {
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
+      <Sidebar activeNoteId={activeNoteId} onNoteSelect={setActiveNoteId} />
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {activeNoteId ? (
+          <Editor noteId={activeNoteId} />
+        ) : (
+          <div className="flex h-full flex-col p-8 lg:p-16">
+            <header className="border-border mb-16 flex items-baseline justify-between border-b pb-8">
+              <div>
+                <h1 className="font-serif text-5xl lg:text-7xl">
+                  Your Workspace
+                </h1>
+                <p className="text-accent mt-2 text-sm tracking-widest uppercase">
+                  {new Date().toLocaleDateString("en-US", {
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </p>
+              </div>
+            </header>
+            <main className="flex flex-1 items-center justify-center">
+              <div className="text-accent text-xs tracking-[0.3em] uppercase opacity-30">
+                Select a note to begin
+              </div>
+            </main>
           </div>
-        </header>
-
-        {/* Main Content Grid */}
-        <main className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {/* Notes or Editor will be rendered here based on selection */}
-        </main>
+        )}
       </div>
     </div>
   );
