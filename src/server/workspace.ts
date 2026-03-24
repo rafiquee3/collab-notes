@@ -59,4 +59,32 @@ export const workspaceRouter = router({
 
       return { success: true };
     }),
+
+  update: protectedProcedure
+    .input(z.object({ id: z.string(), name: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const { id, name } = input;
+      const { session } = ctx;
+
+      const workspace = await prisma.workspace.findFirst({
+        where: {
+          id,
+          ownerId: session.user.id,
+        },
+      });
+
+      if (!workspace) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Workspace not found or unauthorized",
+        });
+      }
+
+      const updatedWorkspace = await prisma.workspace.update({
+        where: { id },
+        data: { name },
+      });
+
+      return updatedWorkspace;
+    }),
 });
