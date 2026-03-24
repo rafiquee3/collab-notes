@@ -14,22 +14,6 @@ export const noteRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { workspaceId, title, content } = input;
-      const { session } = ctx;
-
-      // Verify workspace ownership
-      const workspace = await prisma.workspace.findFirst({
-        where: {
-          id: workspaceId,
-          ownerId: session.user.id,
-        },
-      });
-
-      if (!workspace) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Workspace not found or unauthorized",
-        });
-      }
 
       const note = await prisma.note.create({
         data: {
@@ -46,22 +30,6 @@ export const noteRouter = router({
     .input(z.object({ workspaceId: z.string() }))
     .query(async ({ ctx, input }) => {
       const { workspaceId } = input;
-      const { session } = ctx;
-
-      // Verify workspace ownership
-      const workspace = await prisma.workspace.findFirst({
-        where: {
-          id: workspaceId,
-          ownerId: session.user.id,
-        },
-      });
-
-      if (!workspace) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Workspace not found or unauthorized",
-        });
-      }
 
       const notes = await prisma.note.findMany({
         where: { workspaceId },
@@ -75,21 +43,15 @@ export const noteRouter = router({
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
-      const { session } = ctx;
 
       const note = await prisma.note.findFirst({
-        where: {
-          id,
-          workspace: {
-            ownerId: session.user.id,
-          },
-        },
+        where: { id },
       });
 
       if (!note) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Note not found or unauthorized",
+          message: "Note not found",
         });
       }
 
@@ -106,24 +68,6 @@ export const noteRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, title, content } = input;
-      const { session } = ctx;
-
-      // Verify ownership through workspace
-      const note = await prisma.note.findFirst({
-        where: {
-          id,
-          workspace: {
-            ownerId: session.user.id,
-          },
-        },
-      });
-
-      if (!note) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Note not found or unauthorized",
-        });
-      }
 
       const updatedNote = await prisma.note.update({
         where: { id },

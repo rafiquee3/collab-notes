@@ -40,7 +40,7 @@ export default function Home() {
       <Sidebar activeNoteId={activeNoteId} onNoteSelect={setActiveNoteId} />
       <div className="flex flex-1 flex-col overflow-hidden">
         {activeNoteId ? (
-          <Editor noteId={activeNoteId} />
+          <Editor key={activeNoteId} noteId={activeNoteId} />
         ) : (
           <div className="flex h-full flex-col p-8 lg:p-16">
             <header className="border-border mb-16 flex items-baseline justify-between border-b pb-8">

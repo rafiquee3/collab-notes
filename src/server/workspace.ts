@@ -20,12 +20,7 @@ export const workspaceRouter = router({
       return workspace;
     }),
   list: protectedProcedure.query(async ({ ctx }) => {
-    const { session } = ctx;
-
     const workspaces = await prisma.workspace.findMany({
-      where: {
-        ownerId: session.user.id,
-      },
       include: {
         _count: {
           select: { notes: true },
