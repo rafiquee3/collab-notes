@@ -72,7 +72,63 @@
   }
 
   .tiptap-editor pre {
-    @apply bg-surface border border-border p-4 mb-6 font-mono text-xs overflow-x-auto;
+    @apply bg-surface border border-border p-6 mb-8 font-mono text-sm leading-relaxed overflow-x-auto;
+  }
+
+  .tiptap-editor pre code {
+    @apply bg-transparent p-0 text-inherit font-mono;
+  }
+
+  /* Syntax Highlighting Colors */
+  .hljs-comment,
+  .hljs-quote {
+    @apply text-accent/40 italic;
+  }
+
+  .hljs-keyword,
+  .hljs-selector-tag {
+    @apply text-indigo-700 font-medium;
+  }
+
+  .hljs-string,
+  .hljs-symbol,
+  .hljs-bullet,
+  .hljs-addition {
+    @apply text-emerald-700;
+  }
+
+  .hljs-number,
+  .hljs-built_in,
+  .hljs-builtin-name,
+  .hljs-literal,
+  .hljs-type,
+  .hljs-params,
+  .hljs-meta,
+  .hljs-link {
+    @apply text-orange-600;
+  }
+
+  .hljs-variable,
+  .hljs-template-variable,
+  .hljs-tag,
+  .hljs-name,
+  .hljs-selector-id,
+  .hljs-selector-class,
+  .hljs-regexp,
+  .hljs-deletion {
+    @apply text-amber-700/80;
+  }
+
+  .hljs-attribute {
+    @apply text-yellow-600;
+  }
+
+  .hljs-emphasis {
+    @apply italic;
+  }
+
+  .hljs-strong {
+    @apply font-bold;
   }
 }
 

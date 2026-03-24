@@ -1,6 +1,8 @@
 "use client";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
+import { all, createLowlight } from "lowlight";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import TaskList from "@tiptap/extension-task-list";
@@ -13,6 +15,8 @@ import tippy from "tippy.js";
 import { CommandList } from "./CommandList";
 import { getSuggestionItems } from "./editor/commands";
 import { SlashCommand } from "./editor/slashExtension";
+
+const lowlight = createLowlight(all);
 
 export function Editor({ noteId }: { noteId: string }) {
   const [isSaving, setIsSaving] = useState(false);
@@ -35,7 +39,12 @@ export function Editor({ noteId }: { noteId: string }) {
 
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        codeBlock: false,
+      }),
+      CodeBlockLowlight.configure({
+        lowlight,
+      }),
       Underline,
       Link.configure({ openOnClick: false }),
       TaskList,
