@@ -63,12 +63,12 @@
   }
 
   .tiptap-editor ul:not([data-type="taskList"]):not([data-type="task-list"]) {
-    @apply list-outside mb-6 ml-8 space-y-2;
+    @apply mb-6 ml-8 list-outside space-y-2;
     list-style-type: disc;
   }
 
   .tiptap-editor ol {
-    @apply list-outside mb-6 ml-8 space-y-2;
+    @apply mb-6 ml-8 list-outside space-y-2;
     list-style-type: decimal;
   }
 
@@ -247,7 +247,7 @@
   letter-spacing: 0.05em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: #fff;
+  color: #000;
   padding: 2px 6px;
   border-radius: 3px 3px 3px 0;
   user-select: none;
@@ -266,6 +266,61 @@
 }
 
 @keyframes cursor-blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ── Global Drag Handle ── */
+.global-drag-handle {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: grab;
+  opacity: 0;
+  pointer-events: none;
+  color: var(--color-accent);
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+  z-index: 50;
+}
+
+.global-drag-handle:hover {
+  background-color: var(--color-border);
+  color: var(--color-foreground);
+}
+
+.global-drag-handle:active,
+.global-drag-handle.dragging {
+  cursor: grabbing;
+  background-color: var(--color-accent);
+  color: #fff;
+}
+
+/* ProseMirror drop cursor */
+.ProseMirror-dropcursor {
+  border-top: 2px solid var(--color-accent);
+  display: block;
+  pointer-events: none;
+}
+
+/* Highlight block on hover in editor */
+.ProseMirror > *:hover {
+  border-radius: 4px;
+  background-color: rgba(0, 0, 0, 0.01);
+}
+
+.ProseMirror > *.ProseMirror-selectednode {
+  outline: 2px solid var(--color-accent);
+  border-radius: 4px;
 }

@@ -16,6 +16,7 @@ import { CommandList } from "./CommandList";
 import { getSuggestionItems } from "./editor/commands";
 import { SlashCommand } from "./editor/slashExtension";
 import { YjsCollab } from "./editor/cursorExtension";
+import { GlobalDragHandle } from "./editor/dragHandleExtension";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { useSession } from "next-auth/react";
@@ -91,6 +92,7 @@ function CollabEditor({
           color: userColor,
         },
       }),
+      GlobalDragHandle,
       SlashCommand.configure({
         suggestion: {
           items: getSuggestionItems,
