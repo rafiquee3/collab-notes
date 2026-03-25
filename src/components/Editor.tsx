@@ -15,9 +15,9 @@ import tippy from "tippy.js";
 import { CommandList } from "./CommandList";
 import { getSuggestionItems } from "./editor/commands";
 import { SlashCommand } from "./editor/slashExtension";
+import { YjsCollab } from "./editor/cursorExtension";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
-import Collaboration from "@tiptap/extension-collaboration";
 import { useSession } from "next-auth/react";
 
 const lowlight = createLowlight(all);
@@ -31,8 +31,7 @@ const colors = [
   "#94FADB",
   "#B9EDFB",
 ];
-const getRandomColor = () =>
-  colors[Math.floor(Math.random() * colors.length)];
+const getRandomColor = () => colors[Math.floor(Math.random() * colors.length)];
 
 /**
  * Inner editor component that only mounts when ydoc + provider are fully ready.
@@ -45,6 +44,8 @@ function CollabEditor({
   connectedUsers,
   initialContent,
   note,
+  userName,
+  userColor,
 }: {
   noteId: string;
   ydoc: Y.Doc;
@@ -52,6 +53,8 @@ function CollabEditor({
   connectedUsers: number;
   initialContent: any;
   note: any;
+  userName: string;
+  userColor: string;
 }) {
   const utils = trpc.useUtils();
   const [isSaving, setIsSaving] = useState(false);
@@ -80,8 +83,13 @@ function CollabEditor({
       TaskItem.configure({
         nested: true,
       }),
-      Collaboration.configure({
+      YjsCollab.configure({
         document: ydoc,
+        provider: provider,
+        user: {
+          name: userName,
+          color: userColor,
+        },
       }),
       SlashCommand.configure({
         suggestion: {
@@ -291,6 +299,9 @@ export function Editor({ noteId }: { noteId: string }) {
 
   const initialContent = (note as any)?.content;
 
+  const userColor = useMemo(() => getRandomColor(), []);
+  const userName = session?.user?.name || "Anonymous";
+
   // Show loading until WebSocket is connected AND note data is fetched
   if (!isReady || isLoading || !ydocRef.current || !providerRef.current) {
     return (
@@ -310,6 +321,8 @@ export function Editor({ noteId }: { noteId: string }) {
       connectedUsers={connectedUsers}
       initialContent={initialContent}
       note={note}
+      userName={userName}
+      userColor={userColor}
     />
   );
 }

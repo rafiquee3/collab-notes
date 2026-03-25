@@ -226,3 +226,46 @@
   text-decoration: line-through;
   opacity: 0.5;
 }
+
+/* ── Collaboration Cursor Presence ── */
+.collaboration-cursor__caret {
+  position: relative;
+  margin-left: -1px;
+  margin-right: -1px;
+  border-left: 2px solid;
+  word-break: normal;
+  pointer-events: none;
+}
+
+.collaboration-cursor__label {
+  position: absolute;
+  top: -1.4em;
+  left: -1px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #fff;
+  padding: 2px 6px;
+  border-radius: 3px 3px 3px 0;
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.9;
+  font-family: var(--font-sans), system-ui, sans-serif;
+}
+
+/* Blinking caret animation */
+.ProseMirror-yjs-cursor {
+  position: relative;
+}
+
+.ProseMirror-yjs-cursor > .collaboration-cursor__caret {
+  animation: cursor-blink 1.2s ease-in-out infinite;
+}
+
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
