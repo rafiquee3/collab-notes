@@ -137,5 +137,35 @@ export const noteRouter = router({
         take: 20, // Limit to last 20 versions
       });
     }),
+
+  search: protectedProcedure
+    .input(
+      z.object({
+        workspaceId: z.string(),
+        query: z.string(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { workspaceId, query } = input;
+
+      if (!query.trim()) return [];
+
+      const searchPattern = `%${query}%`;
+
+      // Use raw SQL to efficiently search through JSONB content cast to text
+      const results = await prisma.$queryRaw<any[]>`
+        SELECT id, title, "updatedAt"
+        FROM "Note"
+        WHERE "workspaceId" = ${workspaceId}
+          AND (
+            "title" ILIKE ${searchPattern}
+            OR "content"::text ILIKE ${searchPattern}
+          )
+        ORDER BY "updatedAt" DESC
+        LIMIT 20
+      `;
+
+      return results;
+    }),
 });
 

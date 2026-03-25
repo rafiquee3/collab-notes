@@ -8,16 +8,6 @@ import { Editor } from "@/components/Editor";
 export default function Home() {
   const { data: session } = useSession();
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
-  const { isLoading } = trpc.getUser.useQuery("User123");
-
-  if (isLoading)
-    return (
-      <div className="bg-background flex min-h-screen items-center justify-center">
-        <div className="text-accent animate-pulse font-serif text-2xl tracking-widest uppercase">
-          Loading...
-        </div>
-      </div>
-    );
 
   if (!session) {
     return (

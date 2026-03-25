@@ -38,13 +38,8 @@ export const GlobalDragHandle = Extension.create({
             </svg>
           `;
 
-          // Find the editor's scroll container
-          const editorEl = editorView.dom.closest(".flex-1.overflow-y-auto");
-          const container = editorEl || editorView.dom.parentElement;
-          if (container instanceof HTMLElement) {
-            container.style.position = "relative";
-            container.appendChild(dragHandleElement);
-          }
+          // We will append to the DOM dynamically on the first mousemove
+          // when we are guaranteed that all React containers have rendered.
 
           // Handle dragstart — serialize the block node
           dragHandleElement.addEventListener("dragstart", (e) => {
@@ -104,10 +99,15 @@ export const GlobalDragHandle = Extension.create({
             mousemove: (view, event) => {
               if (!dragHandleElement) return false;
 
+              const scroller = document.getElementById("editor-scroller");
+              if (!scroller) return false;
+
+              // Ensure drag handle is attached to the scroller
+              if (dragHandleElement.parentElement !== scroller) {
+                scroller.appendChild(dragHandleElement);
+              }
+
               const editorRect = view.dom.getBoundingClientRect();
-              const scrollContainer = view.dom.closest(
-                ".flex-1.overflow-y-auto"
-              );
 
               // Find the block node under cursor
               const pos = view.posAtCoords({
@@ -138,12 +138,12 @@ export const GlobalDragHandle = Extension.create({
               const blockDom = view.nodeDOM(topLevelPos);
               if (blockDom && blockDom instanceof HTMLElement) {
                 const blockRect = blockDom.getBoundingClientRect();
-                const containerRect = (
-                  scrollContainer || view.dom.parentElement!
-                ).getBoundingClientRect();
-
-                dragHandleElement.style.top = `${blockRect.top - containerRect.top + (scrollContainer?.scrollTop || 0)}px`;
-                dragHandleElement.style.left = "8px";
+                const scrollerRect = scroller.getBoundingClientRect();
+                
+                // Position relative to the scrolling container
+                dragHandleElement.style.top = `${blockRect.top - scrollerRect.top + scroller.scrollTop + 2}px`;
+                // Safely distance from left edge by 20px (well clear of the sidebar)
+                dragHandleElement.style.left = "20px";
                 dragHandleElement.style.opacity = "1";
                 dragHandleElement.style.pointerEvents = "auto";
               }
