@@ -17,6 +17,7 @@ import { getSuggestionItems } from "./editor/commands";
 import { SlashCommand } from "./editor/slashExtension";
 import { YjsCollab } from "./editor/cursorExtension";
 import { GlobalDragHandle } from "./editor/dragHandleExtension";
+import { VersionHistory } from "./VersionHistory";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
 import { useSession } from "next-auth/react";
@@ -59,6 +60,7 @@ function CollabEditor({
 }) {
   const utils = trpc.useUtils();
   const [isSaving, setIsSaving] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hasLoadedInitial = useRef(false);
 
@@ -150,7 +152,7 @@ function CollabEditor({
     ],
     // ydoc is stable (created via useRef in parent, not changing)
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [userName, userColor]
   );
 
   const editor = useEditor({
@@ -201,6 +203,16 @@ function CollabEditor({
     };
   }, []);
 
+  // Sync awareness info when user details are available/change
+  useEffect(() => {
+    if (!provider || !userName || !userColor) return;
+
+    provider.awareness.setLocalStateField("user", {
+      name: userName,
+      color: userColor,
+    });
+  }, [provider, userName, userColor]);
+
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
       <div className="border-border flex items-center justify-between border-b px-6 py-2">
@@ -213,14 +225,39 @@ function CollabEditor({
             </span>
           </div>
         </div>
-        {isSaving && (
-          <span className="text-accent animate-pulse text-[10px] tracking-widest uppercase">
-            Saving...
-          </span>
-        )}
+        <div className="flex items-center gap-4">
+          {isSaving && (
+            <span className="text-accent animate-pulse text-[10px] tracking-widest uppercase">
+              Saving...
+            </span>
+          )}
+          <button
+            onClick={() => setShowHistory(!showHistory)}
+            className={`text-xs font-medium uppercase tracking-widest transition-colors ${
+              showHistory ? "text-foreground" : "text-accent hover:text-foreground"
+            }`}
+          >
+            History
+          </button>
+        </div>
       </div>
-      <div className="bg-background/50 flex-1 overflow-y-auto">
-        <EditorContent editor={editor} />
+      <div className="flex flex-1 overflow-hidden">
+        <div className="bg-background/50 flex-1 overflow-y-auto">
+          <EditorContent editor={editor} />
+        </div>
+        
+        {showHistory && (
+          <div className="h-full border-l border-border bg-surface w-80 flex-shrink-0 z-10 transition-all">
+             <VersionHistory 
+               noteId={noteId} 
+               onRestore={(content) => {
+                 editor?.commands.setContent(content);
+                 setShowHistory(false);
+               }} 
+               onClose={() => setShowHistory(false)} 
+             />
+          </div>
+        )}
       </div>
     </div>
   );

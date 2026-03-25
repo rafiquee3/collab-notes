@@ -109,4 +109,33 @@ export const noteRouter = router({
 
       return { success: true };
     }),
+
+  createVersion: protectedProcedure
+    .input(
+      z.object({
+        noteId: z.string(),
+        content: z.any(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { noteId, content } = input;
+      return await prisma.noteVersion.create({
+        data: {
+          noteId,
+          content,
+        },
+      });
+    }),
+
+  listVersions: protectedProcedure
+    .input(z.object({ noteId: z.string() }))
+    .query(async ({ input }) => {
+      const { noteId } = input;
+      return await prisma.noteVersion.findMany({
+        where: { noteId },
+        orderBy: { createdAt: "desc" },
+        take: 20, // Limit to last 20 versions
+      });
+    }),
 });
+

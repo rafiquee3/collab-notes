@@ -67,7 +67,17 @@ model Note {
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
   updatedAt DateTime @updatedAt 
   createdAt DateTime @default(now()) 
+  versions  NoteVersion[]
 }
+
+model NoteVersion {
+  id        String   @id @default(cuid())
+  noteId    String
+  note      Note     @relation(fields: [noteId], references: [id], onDelete: Cascade)
+  content   Json?    // Snapshot of Tiptap JSON
+  createdAt DateTime @default(now())
+}
+
 
 model VerificationToken {
   identifier String

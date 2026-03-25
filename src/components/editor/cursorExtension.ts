@@ -37,26 +37,23 @@ export const YjsCollab = Extension.create<YjsCollabOptions>({
     const { document: ydoc, provider, user, field } = this.options;
     const fragment = ydoc.getXmlFragment(field);
 
-    // Set local awareness state with user info
-    provider.awareness.setLocalStateField("user", {
-      name: user.name,
-      color: user.color,
-    });
-
     // IMPORTANT: ySyncPlugin MUST come before yCursorPlugin
     // because the cursor plugin reads from the sync plugin's state
     return [
       ySyncPlugin(fragment),
       yCursorPlugin(provider.awareness, {
-        cursorBuilder: (awarenessUser: Record<string, string>) => {
+        cursorBuilder: (awarenessUser: any) => {
+          const displayColor = awarenessUser?.color || user.color;
+          const displayName = awarenessUser?.name || "Anonymous";
+
           const cursor = document.createElement("span");
           cursor.classList.add("collaboration-cursor__caret");
-          cursor.style.borderColor = awarenessUser.color || user.color;
+          cursor.style.borderColor = displayColor;
 
           const label = document.createElement("div");
           label.classList.add("collaboration-cursor__label");
-          label.style.backgroundColor = awarenessUser.color || user.color;
-          label.textContent = awarenessUser.name || "Anonymous";
+          label.style.backgroundColor = displayColor;
+          label.textContent = displayName;
 
           cursor.appendChild(label);
           return cursor;
