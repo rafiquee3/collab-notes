@@ -209,7 +209,7 @@ export function CollabEditor({
     });
   }, [provider, userName, userColor]);
 
-  // Periodic Snapshot Logic (Every 1 minute for testing)
+  // Periodic Snapshot Logic
   useEffect(() => {
     if (!editor) return;
 
@@ -268,7 +268,10 @@ export function CollabEditor({
         </div>
       </div>
       <div className="flex flex-1 overflow-hidden">
-        <div id="editor-scroller" className="bg-background/50 relative flex-1 overflow-y-auto">
+        <div
+          id="editor-scroller"
+          className="bg-background/50 relative flex-1 overflow-y-auto"
+        >
           <EditorContent editor={editor} />
         </div>
 

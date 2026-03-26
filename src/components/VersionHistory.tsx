@@ -1,6 +1,4 @@
 "use client";
-
-import React from "react";
 import { trpc } from "@/utils/trpc";
 import { format } from "date-fns";
 

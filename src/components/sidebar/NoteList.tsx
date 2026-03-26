@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import { trpc } from "@/utils/trpc";
+import { useSession } from "next-auth/react";
+import * as Y from "yjs";
+import { WebsocketProvider } from "y-websocket";
+import { useEffect, useRef } from "react";
 
 interface NoteListProps {
   selectedWorkspaceId: string;
@@ -20,7 +24,41 @@ export function NoteList({
   const [editingNoteTitle, setEditingNoteTitle] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
+  const { data: session } = useSession();
+
   const utils = trpc.useUtils();
+  const syncMapRef = useRef<Y.Map<any> | null>(null);
+
+  useEffect(() => {
+    if (!selectedWorkspaceId) return;
+
+    const doc = new Y.Doc();
+    const provider = new WebsocketProvider(
+      "ws://localhost:1234",
+      `workspace-sync-${selectedWorkspaceId}`,
+      doc
+    );
+    
+    const syncMap = doc.getMap("sync");
+    syncMapRef.current = syncMap;
+
+    const handleSync = () => {
+      utils.note.list.invalidate({ workspaceId: selectedWorkspaceId });
+    };
+
+    syncMap.observe(handleSync);
+
+    return () => {
+      syncMap.unobserve(handleSync);
+      provider.destroy();
+      doc.destroy();
+      syncMapRef.current = null;
+    };
+  }, [selectedWorkspaceId, utils]);
+
+  const broadcastUpdate = () => {
+    syncMapRef.current?.set("lastUpdate", Date.now());
+  };
 
   const { data: notes, isLoading } = trpc.note.list.useQuery(
     { workspaceId: selectedWorkspaceId },
@@ -35,17 +73,31 @@ export function NoteList({
   const createNote = trpc.note.create.useMutation({
     onSuccess: () => {
       utils.note.list.invalidate({ workspaceId: selectedWorkspaceId });
+      broadcastUpdate();
       setIsCreating(false);
       setNewNoteTitle("");
     },
   });
 
+
   const updateNote = trpc.note.update.useMutation({
     onSuccess: () => {
       utils.note.list.invalidate({ workspaceId: selectedWorkspaceId });
+      broadcastUpdate();
       setEditingNoteId(null);
     },
   });
+
+
+  const deleteNote = trpc.note.delete.useMutation({
+    onSuccess: () => {
+      utils.note.list.invalidate({ workspaceId: selectedWorkspaceId });
+      utils.note.search.invalidate();
+      broadcastUpdate();
+    },
+  });
+
+
 
   const handleCreateNote = (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,6 +121,14 @@ export function NoteList({
     setEditingNoteId(id);
     setEditingNoteTitle(currentTitle || "");
   };
+
+  const handleDelete = (e: React.MouseEvent, id: string) => {
+    e.stopPropagation();
+    if (confirm("Are you sure you want to delete this note?")) {
+      deleteNote.mutate({ id });
+    }
+  };
+
 
   return (
     <div>
@@ -164,7 +224,7 @@ export function NoteList({
       ) : (
         <ul className="space-y-1">
           {(searchQuery ? searchResults : notes)?.map(
-            (note: { id: string; title: string | null }) => (
+            (note: { id: string; title: string | null; authorId?: string | null }) => (
               <li key={note.id} className="group relative">
                 {editingNoteId === note.id ? (
                   <form onSubmit={handleRenameNote} className="w-full">
@@ -190,13 +250,13 @@ export function NoteList({
                     >
                       {note.title || "Untitled"}
                     </button>
-                    {!searchQuery && (
+                    <div className="absolute top-1/2 right-2 -translate-y-1/2 flex items-center gap-1 opacity-0 transition-all group-hover:opacity-100">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
                           startEditing(note.id, note.title);
                         }}
-                        className="text-accent hover:text-foreground absolute top-1/2 right-2 -translate-y-1/2 p-1 opacity-0 transition-all group-hover:opacity-100"
+                        className="text-accent hover:text-foreground p-1 transition-colors"
                         title="Rename"
                       >
                         <svg
@@ -214,7 +274,32 @@ export function NoteList({
                           <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                         </svg>
                       </button>
-                    )}
+                      
+                      {note.authorId === session?.user?.id && (
+                        <button
+                          onClick={(e) => handleDelete(e, note.id)}
+                          className="text-accent hover:text-red-500 p-1 transition-colors"
+                          title="Delete Note"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          >
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                          </svg>
+                        </button>
+                      )}
+                    </div>
                   </div>
                 )}
               </li>

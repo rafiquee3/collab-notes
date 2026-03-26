@@ -49,6 +49,7 @@ model User {
   createdAt     DateTime  @default(now()) 
   accounts      Account[]
   sessions      Session[]
+  notes         Note[]
 }
 
 model Workspace { 
@@ -65,6 +66,8 @@ model Note {
   content Json? // Tiptap JSON format
   workspaceId String 
   workspace Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  authorId String?
+  author User? @relation(fields: [authorId], references: [id])
   updatedAt DateTime @updatedAt 
   createdAt DateTime @default(now()) 
   versions  NoteVersion[]

@@ -15,15 +15,23 @@ export const noteRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { workspaceId, title, content } = input;
 
-      const note = await prisma.note.create({
-        data: {
-          workspaceId,
-          title: title || "Untitled",
-          content,
-        },
-      });
-
-      return note;
+      try {
+        const note = await prisma.note.create({
+          data: {
+            workspaceId,
+            title: title || "Untitled",
+            content,
+            ...(ctx.session.user.id ? { authorId: ctx.session.user.id } : {}),
+          },
+        });
+        return note;
+      } catch (error: any) {
+        console.error("DEBUG NOTE CREATE ERROR:", error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: error.message || "Unknown Prisma error",
+        });
+      }
     }),
 
   list: protectedProcedure
@@ -86,20 +94,18 @@ export const noteRouter = router({
       const { id } = input;
       const { session } = ctx;
 
-      // Verify ownership
+      // Verify authorship
       const note = await prisma.note.findFirst({
         where: {
           id,
-          workspace: {
-            ownerId: session.user.id,
-          },
+          authorId: session.user.id,
         },
       });
 
       if (!note) {
         throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Note not found or unauthorized",
+          code: "UNAUTHORIZED",
+          message: "Only the author can delete this note.",
         });
       }
 
@@ -168,4 +174,3 @@ export const noteRouter = router({
       return results;
     }),
 });
-
