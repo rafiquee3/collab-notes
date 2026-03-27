@@ -62,10 +62,13 @@ export function CollabEditor({
     },
   });
 
-  const createVersion = trpc.note.createVersion.useMutation({
+  const createVersion = (trpc.note.createVersion.useMutation as any)({
     onSuccess: () => {
       console.log("Snapshot version created");
       utils.note.listVersions.invalidate({ noteId });
+    },
+    onError: (err: any) => {
+      console.error("Failed to create snapshot:", err);
     },
   });
 
@@ -213,17 +216,17 @@ export function CollabEditor({
   useEffect(() => {
     if (!editor) return;
 
-    const SNAPSHOT_INTERVAL = 10 * 60 * 1000; // 10 minute
+    const SNAPSHOT_INTERVAL = 10 * 60 * 1000; // 10 minutes
+
+    // Initialize the ref with current content as soon as the editor is ready
+    if (!lastSnapshotContent.current && !editor.isEmpty) {
+      lastSnapshotContent.current = JSON.stringify(editor.getJSON());
+    }
 
     const timer = setInterval(() => {
       if (editor.isEmpty) return;
 
       const currentContent = JSON.stringify(editor.getJSON());
-
-      if (!lastSnapshotContent.current) {
-        lastSnapshotContent.current = currentContent;
-        return;
-      }
 
       if (currentContent !== lastSnapshotContent.current) {
         createVersion.mutate({

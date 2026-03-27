@@ -31,53 +31,55 @@ export function Editor({ noteId }: { noteId: string }) {
   const ydocRef = useRef<Y.Doc | null>(null);
   const providerRef = useRef<WebsocketProvider | null>(null);
 
-  // Initialize Yjs document and WebSocket provider in useEffect (client-only)
+  // Initialize Yjs document and WebSocket provider with a small delay to prevent race conditions
   useEffect(() => {
-    const ydoc = new Y.Doc();
-    const provider = new WebsocketProvider(
-      "ws://localhost:1234",
-      `note-${noteId}`,
-      ydoc
-    );
+    setIsReady(false);
+    
+    const timeout = setTimeout(() => {
+      const ydoc = new Y.Doc();
+      const provider = new WebsocketProvider(
+        "ws://localhost:1234",
+        `note-${noteId}`,
+        ydoc
+      );
 
-    ydocRef.current = ydoc;
-    providerRef.current = provider;
+      ydocRef.current = ydoc;
+      providerRef.current = provider;
 
-    // Track connection status
-    const onStatus = (event: { status: string }) => {
-      console.log("Collab status:", event.status);
-      if (event.status === "connected") {
+      const onStatus = (event: { status: string }) => {
+        if (event.status === "connected") {
+          setIsReady(true);
+        }
+      };
+
+      provider.on("status", onStatus);
+
+      const updateUsers = () => {
+        setConnectedUsers(provider.awareness.getStates().size);
+      };
+      provider.awareness.on("change", updateUsers);
+      updateUsers();
+
+      if (provider.wsconnected) {
         setIsReady(true);
       }
-    };
+    }, 150); // 150ms debounce for note switching
 
-    provider.on("status", onStatus);
-
-    // Track awareness (connected users)
-    const updateUsers = () => {
-      setConnectedUsers(provider.awareness.getStates().size);
-    };
-    provider.awareness.on("change", updateUsers);
-    updateUsers();
-
-    // If already connected (e.g. reconnect), mark ready
-    if (provider.wsconnected) {
-      setIsReady(true);
-    }
-
-    // Fallback: mount editor after 2s even if WS hasn't connected yet
-    // y-websocket will auto-reconnect in background
     const fallbackTimer = setTimeout(() => {
       setIsReady(true);
     }, 2000);
 
     return () => {
+      clearTimeout(timeout);
       clearTimeout(fallbackTimer);
-      provider.off("status", onStatus);
-      provider.awareness.off("change", updateUsers);
-      provider.disconnect();
-      provider.destroy();
-      ydoc.destroy();
+      
+      if (providerRef.current) {
+        providerRef.current.disconnect();
+        providerRef.current.destroy();
+      }
+      if (ydocRef.current) {
+        ydocRef.current.destroy();
+      }
       ydocRef.current = null;
       providerRef.current = null;
       setIsReady(false);

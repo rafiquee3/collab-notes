@@ -5,7 +5,7 @@ import { TRPCError } from "@trpc/server";
 
 export const workspaceRouter = router({
   create: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(z.object({ name: z.string().trim().min(1) }))
     .mutation(async ({ ctx, input }) => {
       const { name } = input;
       const { session } = ctx;
@@ -56,7 +56,7 @@ export const workspaceRouter = router({
     }),
 
   update: protectedProcedure
-    .input(z.object({ id: z.string(), name: z.string().min(1) }))
+    .input(z.object({ id: z.string(), name: z.string().trim().min(1) }))
     .mutation(async ({ ctx, input }) => {
       const { id, name } = input;
       const { session } = ctx;

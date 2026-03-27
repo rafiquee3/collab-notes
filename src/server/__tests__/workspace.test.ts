@@ -35,6 +35,16 @@ describe("workspaceRouter", () => {
     expect(result).toHaveProperty("name", "New Project");
   });
 
+  it("should throw error if workspace name is empty", async () => {
+    await expect(caller.workspace.create({ name: "" }))
+      .rejects.toThrow();
+  });
+
+  it("should throw error if workspace name contains only whitespace", async () => {
+    await expect(caller.workspace.create({ name: "   " }))
+      .rejects.toThrow();
+  });
+
   it("should list workspaces belonging to user", async () => {
     prismaMock.workspace.findMany.mockResolvedValue([
       { id: "ws_1", name: "Ws 1", ownerId: "user_1" },
@@ -51,5 +61,42 @@ describe("workspaceRouter", () => {
       },
     });
     expect(result).toHaveLength(2);
+  });
+
+  it("should delete workspace if user is the owner", async () => {
+    // 1. Mock finding the workspace (authorized)
+    prismaMock.workspace.findFirst.mockResolvedValue({
+      id: "ws_1",
+      name: "My Project",
+      ownerId: "user_1",
+    });
+
+    // 2. Mock deletion
+    prismaMock.workspace.delete.mockResolvedValue({
+      id: "ws_1",
+      name: "My Project",
+      ownerId: "user_1",
+    });
+
+    const result = await caller.workspace.delete({ id: "ws_1" });
+
+    expect(prismaMock.workspace.findFirst).toHaveBeenCalledWith({
+      where: {
+        id: "ws_1",
+        ownerId: "user_1",
+      },
+    });
+    expect(prismaMock.workspace.delete).toHaveBeenCalledWith({
+      where: { id: "ws_1" },
+    });
+    expect(result).toEqual({ success: true });
+  });
+
+  it("should throw error if user is not the owner during deletion", async () => {
+    // Mock finding none (unauthorized)
+    prismaMock.workspace.findFirst.mockResolvedValue(null);
+
+    await expect(caller.workspace.delete({ id: "ws_other" }))
+      .rejects.toThrow("Workspace not found or unauthorized");
   });
 });
