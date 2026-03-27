@@ -83,9 +83,9 @@ describe("Toolbar", () => {
     render(<Toolbar editor={editor} />);
 
     const boldButton = screen.getByTitle("Bold");
-    expect(boldButton).toHaveClass("bg-border/20");
+    expect(boldButton).toHaveClass("bg-accent");
     
     const italicButton = screen.getByTitle("Italic");
-    expect(italicButton).not.toHaveClass("bg-border/20");
+    expect(italicButton).not.toHaveClass("bg-accent");
   });
 });

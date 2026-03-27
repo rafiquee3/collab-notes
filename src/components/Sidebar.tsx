@@ -17,22 +17,24 @@ export function Sidebar({
   );
 
   return (
-    <aside className="border-border bg-background flex min-h-screen w-72 flex-col border-r">
-      <div className="flex-1 overflow-y-auto p-6">
+    <aside className="border-border bg-surface m-3 flex w-72 flex-col rounded-2xl border shadow-sm">
+      <div className="flex-1 overflow-y-auto px-6 py-8">
         <UserInfo />
 
-        <WorkspaceList
-          selectedWorkspaceId={selectedWorkspaceId}
-          onSelect={setSelectedWorkspaceId}
-        />
-
-        {selectedWorkspaceId && (
-          <NoteList
+        <div className="mt-8 space-y-8">
+          <WorkspaceList
             selectedWorkspaceId={selectedWorkspaceId}
-            activeNoteId={activeNoteId}
-            onNoteSelect={onNoteSelect}
+            onSelect={setSelectedWorkspaceId}
           />
-        )}
+
+          {selectedWorkspaceId && (
+            <NoteList
+              selectedWorkspaceId={selectedWorkspaceId}
+              activeNoteId={activeNoteId}
+              onNoteSelect={onNoteSelect}
+            />
+          )}
+        </div>
       </div>
 
       <SignOutButton />

@@ -242,40 +242,43 @@ export function CollabEditor({
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="border-border flex items-center justify-between border-b px-6 py-2">
-        <div className="flex items-center gap-4">
+      <div className="flex items-center justify-between px-8 py-4">
+        <div className="flex items-center gap-6">
           <Toolbar editor={editor} />
-          <div className="flex items-center gap-2">
+          <div className="bg-surface border-border flex items-center gap-2 rounded-full border px-3 py-1 shadow-sm">
             <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <span className="text-accent text-[10px] tracking-widest uppercase">
+            <span className="text-slate-500 text-[10px] font-medium tracking-wider uppercase">
               {connectedUsers} {connectedUsers === 1 ? "user" : "users"} live
             </span>
           </div>
         </div>
         <div className="flex items-center gap-4">
           {isSaving && (
-            <span className="text-accent animate-pulse text-[10px] tracking-widest uppercase">
+            <span className="text-accent animate-pulse text-[10px] font-medium tracking-wider uppercase">
               Saving...
             </span>
           )}
           <button
             onClick={() => setShowHistory(!showHistory)}
-            className={`text-xs font-medium tracking-widest uppercase transition-colors ${
+            className={`rounded-lg px-3 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all ${
               showHistory
-                ? "text-foreground"
-                : "text-accent hover:text-foreground"
+                ? "bg-accent text-white shadow-sm"
+                : "text-slate-500 hover:bg-accent/5 hover:text-accent"
             }`}
           >
             History
           </button>
         </div>
       </div>
+
       <div className="flex flex-1 overflow-hidden">
         <div
           id="editor-scroller"
-          className="bg-background/50 relative flex-1 overflow-y-auto"
+          className="relative flex-1 overflow-y-auto px-8 pb-16 lg:px-20"
         >
-          <EditorContent editor={editor} />
+          <div className="studio-card mx-auto mt-4 max-w-4xl shadow-xl shadow-slate-200/50">
+            <EditorContent editor={editor} />
+          </div>
         </div>
 
         {showHistory && (

@@ -156,7 +156,7 @@ export function WorkspaceList({
             value={newWorkspaceName}
             onChange={(e) => setNewWorkspaceName(e.target.value)}
             placeholder="Workspace name..."
-            className="border-border text-foreground focus:border-accent/50 w-full border bg-transparent px-3 py-2 text-sm outline-none"
+            className="border-border text-foreground focus:ring-accent/20 focus:border-accent w-full rounded-lg border bg-surface px-3 py-2 text-sm outline-none transition-all focus:ring-2"
             onBlur={() => !newWorkspaceName && setIsCreating(false)}
           />
         </form>
@@ -180,7 +180,7 @@ export function WorkspaceList({
                       type="text"
                       value={editingWorkspaceName}
                       onChange={(e) => setEditingWorkspaceName(e.target.value)}
-                      className="border-border text-foreground focus:border-accent/50 w-full border bg-transparent px-3 py-2 text-sm outline-none"
+                      className="border-border text-foreground focus:ring-accent/20 focus:border-accent w-full rounded-lg border bg-surface px-3 py-2 text-sm outline-none transition-all focus:ring-2"
                       onBlur={() =>
                         handleRenameWorkspace(new Event("submit") as any)
                       }
@@ -193,10 +193,10 @@ export function WorkspaceList({
                       onDoubleClick={() =>
                         startEditingWorkspace(ws.id, ws.name)
                       }
-                      className={`group-hover:border-border group-hover:bg-border/10 group-hover:text-foreground w-full border px-3 py-2 text-left text-sm transition-all transition-colors ${
+                      className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-all ${
                         selectedWorkspaceId === ws.id
-                          ? "border-border bg-border/20 text-foreground font-medium"
-                          : "text-accent border-transparent"
+                          ? "bg-accent text-white font-medium shadow-sm"
+                          : "text-slate-600 hover:bg-accent/5 hover:text-accent border-transparent"
                       }`}
                     >
                       {ws.name}
@@ -207,7 +207,11 @@ export function WorkspaceList({
                           e.stopPropagation();
                           startEditingWorkspace(ws.id, ws.name);
                         }}
-                        className="text-accent hover:text-foreground p-1 transition-colors"
+                        className={`p-1 transition-colors ${
+                          selectedWorkspaceId === ws.id
+                            ? "text-white/80 hover:text-white"
+                            : "text-slate-400 hover:text-accent"
+                        }`}
                         title="Rename"
                       >
                         <svg
@@ -229,7 +233,11 @@ export function WorkspaceList({
                       {ws.ownerId === session?.user?.id && (
                         <button
                           onClick={(e) => handleDeleteWorkspace(e, ws.id)}
-                          className="text-accent p-1 transition-colors hover:text-red-500"
+                          className={`p-1 transition-colors ${
+                            selectedWorkspaceId === ws.id
+                              ? "text-white/80 hover:text-white"
+                              : "text-slate-400 hover:text-red-500"
+                          }`}
                           title="Delete Workspace"
                         >
                           <svg

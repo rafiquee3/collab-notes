@@ -27,7 +27,7 @@ export function VersionHistory({
   };
 
   return (
-    <div className="bg-surface border-border flex w-80 flex-col border-l shadow-2xl transition-all duration-300">
+    <div className="bg-surface border-border flex h-full w-80 flex-col border-l shadow-2xl transition-all duration-300">
       <div className="border-border flex items-center justify-between border-b px-6 py-4">
         <h3 className="text-foreground font-serif text-lg font-medium">
           Version History

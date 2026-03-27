@@ -26,31 +26,31 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-background flex min-h-screen">
+    <div className="bg-background flex h-screen overflow-hidden">
       <Sidebar activeNoteId={activeNoteId} onNoteSelect={setActiveNoteId} />
       <div className="flex flex-1 flex-col overflow-hidden">
         {activeNoteId ? (
           <Editor key={activeNoteId} noteId={activeNoteId} />
         ) : (
-          <div className="flex h-full flex-col p-8 lg:p-16">
-            <header className="border-border mb-16 flex items-baseline justify-between border-b pb-8">
+          <div className="flex h-full flex-col p-8 lg:px-20 lg:py-12">
+            <header className="mb-16 flex items-baseline justify-between">
               <div>
-                <h1 className="font-serif text-5xl lg:text-7xl">
+                <h1 className="text-foreground text-5xl font-bold tracking-tight lg:text-6xl">
                   Your Workspace
                 </h1>
-                <p className="text-accent mt-2 text-sm tracking-widest uppercase">
-                  {new Date().toLocaleDateString("en-US", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </p>
+                <div className="flex flex-col gap-1 mt-3">
+                  <p className="text-slate-400 text-xs font-semibold tracking-widest uppercase">
+                    {new Date().toLocaleDateString("en-US", {
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </p>
+                  <p className="text-accent/60 text-[10px] font-bold tracking-[0.3em] uppercase">
+                    Select a note to begin
+                  </p>
+                </div>
               </div>
             </header>
-            <main className="flex flex-1 items-center justify-center">
-              <div className="text-accent text-xs tracking-[0.3em] uppercase opacity-30">
-                Select a note to begin
-              </div>
-            </main>
           </div>
         )}
       </div>

@@ -139,10 +139,10 @@ export function NoteList({
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search notes..."
-            className="border-border text-foreground focus:border-accent/50 w-full border bg-transparent px-3 py-2 pl-8 text-sm outline-none transition-all placeholder:text-accent/50"
+            className="border-border text-foreground focus:ring-accent/20 focus:border-accent w-full rounded-xl border bg-surface px-3 py-2 pl-8 text-sm outline-none transition-all focus:ring-2 placeholder:text-slate-400"
           />
           <svg
-            className="text-accent/50 absolute left-2.5 top-1/2 -translate-y-1/2"
+            className="text-slate-400 absolute left-2.5 top-1/2 -translate-y-1/2"
             xmlns="http://www.w3.org/2000/svg"
             width="14"
             height="14"
@@ -207,7 +207,7 @@ export function NoteList({
             value={newNoteTitle}
             onChange={(e) => setNewNoteTitle(e.target.value)}
             placeholder="Note title..."
-            className="border-border text-foreground focus:border-accent/50 w-full border bg-transparent px-3 py-2 text-sm outline-none"
+            className="border-border text-foreground focus:ring-accent/20 focus:border-accent w-full rounded-lg border bg-surface px-3 py-2 text-sm outline-none transition-all focus:ring-2"
             onBlur={() => !newNoteTitle && setIsCreating(false)}
           />
         </form>
@@ -233,7 +233,7 @@ export function NoteList({
                       type="text"
                       value={editingNoteTitle}
                       onChange={(e) => setEditingNoteTitle(e.target.value)}
-                      className="border-border text-foreground focus:border-accent/50 w-full border bg-transparent px-3 py-2 text-sm outline-none"
+                      className="border-border text-foreground focus:ring-accent/20 focus:border-accent w-full rounded-lg border bg-surface px-3 py-2 text-sm outline-none transition-all focus:ring-2"
                       onBlur={() => handleRenameNote(new Event("submit") as any)}
                     />
                   </form>
@@ -242,10 +242,10 @@ export function NoteList({
                     <button
                       onClick={() => onNoteSelect(note.id)}
                       onDoubleClick={() => startEditing(note.id, note.title)}
-                      className={`text-accent group-hover:border-border group-hover:bg-border/10 group-hover:text-foreground w-full truncate border px-3 py-2 text-left text-sm transition-all transition-colors ${
+                      className={`w-full rounded-lg px-3 py-2 text-left text-sm transition-all ${
                         activeNoteId === note.id
-                          ? "border-border bg-border/20 text-foreground font-medium"
-                          : "border-transparent"
+                          ? "bg-accent text-white font-medium shadow-sm"
+                          : "text-slate-600 hover:bg-accent/5 hover:text-accent border-transparent"
                       }`}
                     >
                       {note.title || "Untitled"}
@@ -256,7 +256,11 @@ export function NoteList({
                           e.stopPropagation();
                           startEditing(note.id, note.title);
                         }}
-                        className="text-accent hover:text-foreground p-1 transition-colors"
+                        className={`p-1 transition-colors ${
+                          activeNoteId === note.id
+                            ? "text-white/80 hover:text-white"
+                            : "text-slate-400 hover:text-accent"
+                        }`}
                         title="Rename"
                       >
                         <svg
@@ -278,7 +282,11 @@ export function NoteList({
                       {note.authorId === session?.user?.id && (
                         <button
                           onClick={(e) => handleDelete(e, note.id)}
-                          className="text-accent hover:text-red-500 p-1 transition-colors"
+                          className={`p-1 transition-colors ${
+                            activeNoteId === note.id
+                              ? "text-white/80 hover:text-white"
+                              : "text-slate-400 hover:text-red-500"
+                          }`}
                           title="Delete Note"
                         >
                           <svg

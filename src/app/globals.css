@@ -1,14 +1,16 @@
 @import "tailwindcss";
 
 @theme {
-  --font-serif: var(--font-serif);
+  --font-serif: var(--font-sans); /* Overriding serif with sans for modern look */
   --font-sans: var(--font-sans);
 
-  --color-background: #f8f9fa;
+  --color-background: #e2e8f0; /* Slate 200 - roughly 15% darker than Slate 50 */
   --color-surface: #ffffff;
-  --color-foreground: #1a1a1a;
-  --color-accent: #4a5568;
-  --color-border: #e2e8f0;
+  --color-foreground: #000000; /* True black */
+  --color-accent: #6366f1; /* Indigo 500 */
+  --color-border: #cbd5e1; /* Slate 300 - approx 15% darker than Slate 100 */
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
 }
 
 @layer base {
@@ -27,19 +29,23 @@
 
 @layer components {
   .studio-card {
-    @apply bg-surface border-border border p-6 transition-all duration-300;
+    @apply bg-surface border-border rounded-2xl border p-6 shadow-sm transition-all duration-300;
   }
 
   .studio-button {
-    @apply border-foreground bg-foreground text-background hover:bg-background hover:text-foreground border px-4 py-2 text-sm tracking-wider uppercase transition-all;
+    @apply bg-accent text-white hover:bg-accent/90 focus:ring-accent/50 rounded-lg px-4 py-2 text-sm font-medium transition-all focus:ring-2 focus:outline-none;
+    letter-spacing: normal;
+    text-transform: none;
   }
 
   .studio-button-outline {
-    @apply border-border hover:border-foreground border px-4 py-2 text-sm tracking-wider uppercase transition-all;
+    @apply border-border text-foreground hover:bg-background rounded-lg border px-4 py-2 text-sm font-medium transition-all;
+    letter-spacing: normal;
+    text-transform: none;
   }
 
   .studio-input {
-    @apply border-border bg-surface focus:border-foreground border px-4 py-2 text-sm transition-all focus:outline-none;
+    @apply border-border bg-surface focus:border-accent rounded-lg border px-4 py-2 text-sm transition-all focus:outline-none;
   }
 
   .tiptap-editor {
@@ -59,7 +65,7 @@
   }
 
   .tiptap-editor p {
-    @apply text-accent/90 mb-6 text-base leading-relaxed lg:text-lg;
+    @apply text-black mb-6 text-base leading-relaxed lg:text-lg;
   }
 
   .tiptap-editor ul:not([data-type="taskList"]):not([data-type="task-list"]) {

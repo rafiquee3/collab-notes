@@ -75,11 +75,11 @@ export function Toolbar({ editor }: ToolbarProps) {
         : 0;
 
   return (
-    <div className="border-border bg-background/50 sticky top-0 z-10 flex flex-wrap items-center gap-1 border-b p-2 backdrop-blur-sm">
+    <div className="border-white bg-background/50 sticky top-0 z-10 flex flex-wrap items-center gap-1 rounded-xl border p-2 backdrop-blur-sm shadow-sm">
       <select
         value={currentHeading}
         onChange={(e) => handleHeadingChange(parseInt(e.target.value))}
-        className="border-border text-accent hover:border-border hover:bg-border/10 hover:text-foreground h-8 border bg-transparent px-2 text-xs font-medium transition-colors outline-none"
+        className="border-border text-slate-600 hover:border-accent hover:bg-accent/5 hover:text-accent h-8 rounded-lg border bg-surface px-2 text-xs font-semibold transition-all outline-none"
       >
         <option value={0} className="bg-background">
           Paragraph
@@ -100,10 +100,10 @@ export function Toolbar({ editor }: ToolbarProps) {
           key={btn.title}
           onClick={btn.action}
           title={btn.title}
-          className={`flex h-8 min-w-[32px] items-center justify-center border px-2 text-xs font-medium transition-colors ${
+          className={`flex h-8 min-w-[32px] items-center justify-center rounded-lg px-2 text-xs font-bold transition-all ${
             btn.isActive
-              ? "border-border bg-border/20 text-foreground"
-              : "text-accent hover:border-border hover:bg-border/10 hover:text-foreground border-transparent"
+              ? "bg-accent text-white shadow-sm"
+              : "text-slate-500 hover:bg-accent/5 hover:text-accent"
           }`}
         >
           {btn.label}
