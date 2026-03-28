@@ -34,7 +34,7 @@ export function NoteList({
 
     const doc = new Y.Doc();
     const provider = new WebsocketProvider(
-      "ws://localhost:1234",
+      process.env.NEXT_PUBLIC_COLLAB_SERVER_URL || "ws://localhost:1234",
       `workspace-sync-${selectedWorkspaceId}`,
       doc
     );

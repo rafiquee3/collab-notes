@@ -38,7 +38,7 @@ export function Editor({ noteId }: { noteId: string }) {
     const timeout = setTimeout(() => {
       const ydoc = new Y.Doc();
       const provider = new WebsocketProvider(
-        "ws://localhost:1234",
+        process.env.NEXT_PUBLIC_COLLAB_SERVER_URL || "ws://localhost:1234",
         `note-${noteId}`,
         ydoc
       );
