@@ -9,6 +9,7 @@
     "test:watch": "vitest",
     "build": "next build",
     "start": "next start",
+    "start:collab": "npx tsx src/server/wss.ts",
     "lint": "eslint",
     "format": "prettier --write .",
     "postinstall": "prisma generate"
