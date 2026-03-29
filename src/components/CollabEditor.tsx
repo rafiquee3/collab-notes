@@ -283,7 +283,7 @@ export function CollabEditor({
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="relative flex flex-1 overflow-hidden">
         <div
           id="editor-scroller"
           className="relative flex-1 overflow-y-auto px-4 pb-16 md:px-8 lg:px-20"
@@ -294,7 +294,7 @@ export function CollabEditor({
         </div>
 
         {showHistory && (
-          <div className="border-border bg-surface z-10 h-full w-80 flex-shrink-0 border-l transition-all">
+          <div className="border-border bg-surface z-20 absolute inset-0 sm:inset-y-0 sm:right-0 sm:left-auto sm:w-80 md:static md:w-80 flex-shrink-0 md:border-l transition-all shadow-2xl md:shadow-none">
             <VersionHistory
               noteId={noteId}
               onRestore={(content) => {
