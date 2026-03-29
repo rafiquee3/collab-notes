@@ -161,7 +161,7 @@ export function CollabEditor({
     editorProps: {
       attributes: {
         class:
-          "tiptap-editor max-w-none focus:outline-none min-h-[500px] p-8 lg:p-16 text-foreground",
+          "tiptap-editor max-w-none focus:outline-none min-h-[500px] p-4 md:p-8 lg:p-16 text-foreground",
       },
     },
     onUpdate: ({ editor }) => {
@@ -242,39 +242,51 @@ export function CollabEditor({
 
   return (
     <div className="flex flex-1 flex-col overflow-hidden">
-      <div className="flex items-center justify-between px-8 py-4">
-        <div className="flex items-center gap-6">
-          <Toolbar editor={editor} />
-          <div className="bg-surface border-border flex items-center gap-2 rounded-full border px-3 py-1 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between px-4 py-3 md:px-8 md:py-4 border-b md:border-b-0 border-border gap-3">
+        <div className="flex items-center justify-between md:justify-start gap-4">
+          <div className="flex-1 overflow-x-auto w-full scrollbar-hide -mb-1 pb-1">
+            <Toolbar editor={editor} />
+          </div>
+          <div className="bg-surface border-border hidden md:flex items-center gap-2 rounded-full border px-3 py-1 shadow-sm flex-shrink-0 ml-4">
             <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-            <span className="text-slate-500 text-[10px] font-medium tracking-wider uppercase">
+            <span className="text-slate-500 text-[10px] font-medium tracking-wider uppercase whitespace-nowrap">
               {connectedUsers} {connectedUsers === 1 ? "user" : "users"} live
             </span>
           </div>
         </div>
-        <div className="flex items-center gap-4">
-          {isSaving && (
-            <span className="text-accent animate-pulse text-[10px] font-medium tracking-wider uppercase">
-              Saving...
+        
+        <div className="flex items-center justify-between md:justify-end gap-4">
+          <div className="bg-surface border-border flex md:hidden items-center gap-2 rounded-full border px-3 py-1 shadow-sm mr-auto">
+            <div className="h-2 w-2 animate-pulse rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+            <span className="text-slate-500 text-[10px] font-medium tracking-wider uppercase">
+              {connectedUsers} live
             </span>
-          )}
-          <button
-            onClick={() => setShowHistory(!showHistory)}
-            className={`rounded-lg px-3 py-1.5 text-xs font-semibold tracking-wider uppercase transition-all ${
-              showHistory
-                ? "bg-accent text-white shadow-sm"
-                : "text-slate-500 hover:bg-accent/5 hover:text-accent"
-            }`}
-          >
-            History
-          </button>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {isSaving && (
+              <span className="text-accent flex-shrink-0 animate-pulse text-[10px] font-medium tracking-wider uppercase">
+                Saving...
+              </span>
+            )}
+            <button
+              onClick={() => setShowHistory(!showHistory)}
+              className={`rounded-lg px-3 py-1.5 flex-shrink-0 text-xs font-semibold tracking-wider uppercase transition-all ${
+                showHistory
+                  ? "bg-accent text-white shadow-sm"
+                  : "text-slate-500 hover:bg-accent/5 hover:text-accent"
+              }`}
+            >
+              History
+            </button>
+          </div>
         </div>
       </div>
 
       <div className="flex flex-1 overflow-hidden">
         <div
           id="editor-scroller"
-          className="relative flex-1 overflow-y-auto px-8 pb-16 lg:px-20"
+          className="relative flex-1 overflow-y-auto px-4 pb-16 md:px-8 lg:px-20"
         >
           <div className="studio-card mx-auto mt-4 max-w-4xl shadow-xl shadow-slate-200/50">
             <EditorContent editor={editor} />

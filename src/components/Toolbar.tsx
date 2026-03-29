@@ -75,7 +75,7 @@ export function Toolbar({ editor }: ToolbarProps) {
         : 0;
 
   return (
-    <div className="border-white bg-background/50 sticky top-0 z-10 flex flex-wrap items-center gap-1 rounded-xl border p-2 backdrop-blur-sm shadow-sm">
+    <div className="border-white bg-background/50 sticky top-0 z-10 flex w-max min-w-full md:min-w-0 md:w-auto flex-nowrap md:flex-wrap items-center gap-1 rounded-xl border p-2 backdrop-blur-sm shadow-sm transition-all pb-2 md:pb-2">
       <select
         value={currentHeading}
         onChange={(e) => handleHeadingChange(parseInt(e.target.value))}

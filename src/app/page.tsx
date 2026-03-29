@@ -8,6 +8,7 @@ import { Editor } from "@/components/Editor";
 export default function Home() {
   const { data: session } = useSession();
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   if (!session) {
     return (
@@ -26,8 +27,33 @@ export default function Home() {
   }
 
   return (
-    <div className="bg-background flex h-screen overflow-hidden">
-      <Sidebar activeNoteId={activeNoteId} onNoteSelect={setActiveNoteId} />
+    <div className="bg-background relative flex h-screen overflow-hidden flex-col md:flex-row">
+      <Sidebar 
+        activeNoteId={activeNoteId} 
+        onNoteSelect={(id) => {
+          setActiveNoteId(id);
+          setIsMobileMenuOpen(false);
+        }} 
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+      />
+
+      {/* Mobile Top Header */}
+      <div className="border-border bg-surface flex h-14 items-center justify-between border-b px-4 md:hidden flex-shrink-0">
+        <div className="font-serif text-xl font-medium tracking-tight">CollabNotes</div>
+        <button 
+          onClick={() => setIsMobileMenuOpen(true)}
+          className="text-foreground hover:bg-background rounded-lg p-2 transition-colors"
+          aria-label="Open Menu"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
       <div className="flex flex-1 flex-col overflow-hidden">
         {activeNoteId ? (
           <Editor key={activeNoteId} noteId={activeNoteId} />
