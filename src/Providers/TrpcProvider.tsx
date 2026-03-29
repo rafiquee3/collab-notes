@@ -11,7 +11,12 @@ export function TrpcProvider({ children }: { children: React.ReactNode }) {
     trpc.createClient({
       links: [
         httpBatchLink({
-          url: "http://localhost:3000/api/trpc", // Adres Twojego API
+          url:
+            typeof window !== "undefined"
+              ? "/api/trpc"
+              : process.env.VERCEL_URL
+                ? `https://${process.env.VERCEL_URL}/api/trpc`
+                : "http://localhost:3000/api/trpc",
         }),
       ],
     })
