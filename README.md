@@ -1,36 +1,96 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CollabNotes 📝 
 
-## Getting Started
+![collab-notes-preview](https://collab-notes-blue.vercel.app/logo.png)
 
-First, run the development server:
+A modern, real-time collaborative note-taking application designed for seamless team productivity. Built with Next.js and powered by Yjs, CollabNotes allows multiple users to edit the same rich-text document simultaneously, similar to Google Docs or Notion.
 
+**🌐 Live Demo:** [https://collab-notes-blue.vercel.app](https://collab-notes-blue.vercel.app)
+
+---
+
+## ✨ Features
+
+- **Real-Time Collaboration:** Powered by `Yjs` and WebSockets, see exactly what your colleagues are typing as they type it.
+- **Rich Text Editing:** A robust and beautiful editor built on top of `Tiptap` with support for headings, bold/italic, lists (ul, ol, tasks), code blocks, and blockquotes.
+- **Visual Presence:** Live cursors and colored tags show the activity of other users currently in the workspace.
+- **User Authentication:** Secure login and registration flows powered by `NextAuth.js`.
+- **Workspaces & Organization:** Create customized workspaces to organize your notes efficiently.
+- **Version History:** Track changes and restore previous snapshots of your document in seconds.
+- **Fully Responsive:** Carefully crafted mobile UI featuring a slide-over navigation drawer and horizontal scrollable toolbars.
+
+## 🛠️ Technology Stack
+
+This application is built using a modern, full-stack TypeScript architecture:
+
+### Frontend
+- **Framework:** Next.js (App Router)
+- **Styling:** Tailwind CSS (with highly customized utility classes)
+- **Editor:** Tiptap / ProseMirror
+- **State Management & Caching:** React Query
+
+### Backend & Collaboration
+- **API:** tRPC for end-to-end typesafe data fetching
+- **Database:** PostgreSQL accessed via Prisma ORM
+- **Authentication:** NextAuth.js
+- **Real-Time Server:** Custom Node.js WebSocket server utilizing `y-websocket`
+
+### Deployment Structure
+- **Frontend & API:** Hosted on [Vercel](https://vercel.com) for edge-optimized performance.
+- **WebSocket Server:** Hosted on [Render](https://render.com) for uninterrupted, stable `wss://` connections.
+
+---
+
+## 🚀 Getting Started Locally
+
+If you'd like to run a local instance of CollabNotes, simply follow these steps:
+
+### Prerequisites
+- Node.js (v18+)
+- Local or Cloud PostgreSQL database instance
+
+### 1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/rafiquee3/collab-notes.git
+cd collab-notes
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Setup Environment Variables
+Create a `.env` file in the root directory based on `.env.example` structure. You'll need to define:
+```env
+DATABASE_URL="postgres://user:password@localhost:5432/collab_notes"
+NEXTAUTH_SECRET="your_very_secret_key"
+NEXTAUTH_URL="http://localhost:3000"
+NEXT_PUBLIC_COLLAB_SERVER_URL="ws://localhost:1234"
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Setup the Database
+Push the Prisma schema to your database.
+```bash
+npx prisma db push
+```
 
-## Learn More
+### 5. Start the Application
+You need to run two processes simultaneously: the Next.js frontend and the WebSocket server.
 
-To learn more about Next.js, take a look at the following resources:
+**Terminal 1 (Next.js):**
+```bash
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Terminal 2 (WebSocket Server):**
+```bash
+npm run start:collab
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) in your browser. 
+Have fun collaborating!
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📄 License
+This project is open-source and available under the [MIT License](LICENSE).
