@@ -1,0 +1,44 @@
+services:
+  web:
+    build:
+      context: .
+      target: runner
+    command: npm start
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    env_file:
+      - .env
+    restart: always
+
+  wss:
+    build:
+      context: .
+      target: runner
+    command: npm run start:collab
+    ports:
+      - "1234:1234"
+    environment:
+      - PORT=1234
+    env_file:
+      - .env
+    restart: always
+
+# Local DB
+# DATABASE_URL="postgresql://postgres:password@db:5432/collab_notes"
+
+#  db:
+#    image: postgres:15-alpine
+#    restart: always
+#    environment:
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: password
+#      POSTGRES_DB: collab_notes
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - db-data:/var/lib/postgresql/data
+
+#volumes:
+#  db-data:

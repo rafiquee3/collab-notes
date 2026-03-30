@@ -4,6 +4,11 @@ A modern, real-time collaborative note-taking application designed for seamless 
 
 **🌐 Live Demo:** [https://collab-notes-blue.vercel.app](https://collab-notes-blue.vercel.app)
 
+> **🔑 Demo Credentials:**
+>
+> - Email: `test@test.com`
+> - Password: `test123`
+
 ---
 
 ## ✨ Features
@@ -100,6 +105,36 @@ npm run start:collab
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 Have fun collaborating!
+
+---
+
+## 🐳 Running with Docker
+
+The easiest way to get CollabNotes running locally with all its components (Frontend, Backend, and WebSocket server) is using Docker Compose.
+
+### 1. Prerequisites
+
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) installed and running.
+
+### 2. Setup Environment Variables
+
+Make sure you have a `.env` file in the root directory properly configured.
+
+### 3. Launch the Stack
+
+Run the following command in your terminal:
+
+```bash
+docker compose up --build
+```
+
+This command will:
+
+- Build an optimized Docker image for CollabNotes.
+- Start the **Next.js app** on [http://localhost:3000](http://localhost:3000).
+- Start the **WebSocket server** on port `1234`.
+
+To stop the application and remove containers, press `Ctrl+C` or run `docker compose down`.
 
 ---
 
