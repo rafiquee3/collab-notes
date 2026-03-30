@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { useSession, signIn } from "next-auth/react";
-import { trpc } from "@/utils/trpc";
 import { Sidebar } from "@/components/Sidebar";
 import { Editor } from "@/components/Editor";
 

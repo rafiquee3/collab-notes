@@ -61,7 +61,7 @@ export function Toolbar({ editor }: ToolbarProps) {
       editor
         .chain()
         .focus()
-        .toggleHeading({ level: level as any })
+        .toggleHeading({ level: level as 1 | 2 | 3 })
         .run();
     }
   };

@@ -1,12 +1,27 @@
 import React, {
   forwardRef,
-  useEffect,
   useImperativeHandle,
   useState,
 } from "react";
 
-export const CommandList = forwardRef((props: any, ref) => {
+interface CommandItem {
+  title: string;
+  description: string;
+}
+
+interface CommandListProps {
+  items: CommandItem[];
+  command: (item: CommandItem) => void;
+}
+
+export const CommandList = forwardRef<any, CommandListProps>((props, ref) => {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [prevItems, setPrevItems] = useState(props.items);
+
+  if (props.items !== prevItems) {
+    setSelectedIndex(0);
+    setPrevItems(props.items);
+  }
 
   const selectItem = (index: number) => {
     const item = props.items[index];
@@ -15,10 +30,9 @@ export const CommandList = forwardRef((props: any, ref) => {
     }
   };
 
-  useEffect(() => setSelectedIndex(0), [props.items]);
-
   useImperativeHandle(ref, () => ({
     onKeyDown: ({ event }: { event: KeyboardEvent }) => {
+      // ...
       if (event.key === "ArrowUp") {
         setSelectedIndex(
           (selectedIndex + props.items.length - 1) % props.items.length
@@ -40,7 +54,7 @@ export const CommandList = forwardRef((props: any, ref) => {
   return (
     <div className="bg-surface border-border flex flex-col overflow-hidden border shadow-xl min-w-[200px]">
       {props.items.length ? (
-        props.items.map((item: any, index: number) => (
+        props.items.map((item, index) => (
           <button
             key={index}
             onClick={() => selectItem(index)}

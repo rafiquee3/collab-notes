@@ -1,10 +1,12 @@
+import { Editor, Range } from "@tiptap/core";
+
 export const getSuggestionItems = ({ query }: { query: string }) => {
   return [
     {
       title: "Heading 1",
       description: "Large section heading",
       searchTerms: ["h1", "heading", "header"],
-      command: ({ editor, range }: any) => {
+      command: ({ editor, range }: { editor: Editor; range: Range }) => {
         editor
           .chain()
           .focus()
@@ -17,7 +19,7 @@ export const getSuggestionItems = ({ query }: { query: string }) => {
       title: "Heading 2",
       description: "Medium section heading",
       searchTerms: ["h2", "heading", "header"],
-      command: ({ editor, range }: any) => {
+      command: ({ editor, range }: { editor: Editor; range: Range }) => {
         editor
           .chain()
           .focus()
@@ -30,7 +32,7 @@ export const getSuggestionItems = ({ query }: { query: string }) => {
       title: "Heading 3",
       description: "Low section heading",
       searchTerms: ["h3", "heading", "header"],
-      command: ({ editor, range }: any) => {
+      command: ({ editor, range }: { editor: Editor; range: Range }) => {
         editor
           .chain()
           .focus()
@@ -43,7 +45,7 @@ export const getSuggestionItems = ({ query }: { query: string }) => {
       title: "Task List",
       description: "Task list with checkboxes",
       searchTerms: ["todo", "task", "list", "tasks"],
-      command: ({ editor, range }: any) => {
+      command: ({ editor, range }: { editor: Editor; range: Range }) => {
         editor.chain().focus().deleteRange(range).toggleTaskList().run();
       },
     },
@@ -51,7 +53,7 @@ export const getSuggestionItems = ({ query }: { query: string }) => {
       title: "Code Block",
       description: "Code block with syntax highlighting",
       searchTerms: ["code", "block", "programming"],
-      command: ({ editor, range }: any) => {
+      command: ({ editor, range }: { editor: Editor; range: Range }) => {
         editor.chain().focus().deleteRange(range).toggleCodeBlock().run();
       },
     },
@@ -59,7 +61,7 @@ export const getSuggestionItems = ({ query }: { query: string }) => {
       title: "Bullet List",
       description: "Classic bulleted list",
       searchTerms: ["list", "bullets", "points"],
-      command: ({ editor, range }: any) => {
+      command: ({ editor, range }: { editor: Editor; range: Range }) => {
         editor.chain().focus().deleteRange(range).toggleBulletList().run();
       },
     },

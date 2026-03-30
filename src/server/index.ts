@@ -1,6 +1,6 @@
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { router, publicProcedure, protectedProcedure } from "./trpc";
+import { router, publicProcedure } from "./trpc";
 import { prisma } from "@/lib/prisma";
 import { noteRouter } from "./note";
 import { workspaceRouter } from "./workspace";

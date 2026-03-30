@@ -1,6 +1,7 @@
 import { WebSocketServer } from "ws";
 import http from "http";
-const { setupWSConnection } = require("y-websocket/bin/utils");
+// @ts-expect-error - y-websocket lacks proper ESM declarations for this internal file
+import { setupWSConnection } from "y-websocket/bin/utils";
 
 const port = process.env.PORT || 1234;
 

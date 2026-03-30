@@ -1,6 +1,5 @@
 import { Extension } from "@tiptap/core";
-import { Plugin, PluginKey } from "@tiptap/pm/state";
-import { Decoration, DecorationSet } from "@tiptap/pm/view";
+import { Plugin, PluginKey, NodeSelection } from "@tiptap/pm/state";
 
 const dragHandlePluginKey = new PluginKey("globalDragHandle");
 
@@ -53,20 +52,16 @@ export const GlobalDragHandle = Extension.create({
             const resolvedPos = state.doc.resolve(currentBlockPos);
 
             // Set the selection to the block for ProseMirror's drag handler
-            const nodeSelection =
-              // @ts-ignore
-              editorView.state.selection.constructor.near(resolvedPos);
+            (editorView.state.selection.constructor as any).near(resolvedPos);
 
             editorView.dispatch(
               tr.setSelection(
-                // @ts-ignore
-                new (require("@tiptap/pm/state").NodeSelection)(resolvedPos)
+                new NodeSelection(resolvedPos)
               )
             );
 
             // Let ProseMirror handle the drag with proper slice data
-            // @ts-ignore
-            editorView.dragging = {
+            (editorView as any).dragging = {
               slice: state.doc.slice(
                 currentBlockPos,
                 currentBlockPos + nodeAtPos.nodeSize

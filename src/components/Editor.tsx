@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { trpc } from "@/utils/trpc";
 import * as Y from "yjs";
 import { WebsocketProvider } from "y-websocket";
@@ -27,24 +27,22 @@ export function Editor({ noteId }: { noteId: string }) {
   const [isReady, setIsReady] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState(0);
 
-  // Use refs instead of useMemo to prevent React strict-mode double-init issues
-  const ydocRef = useRef<Y.Doc | null>(null);
-  const providerRef = useRef<WebsocketProvider | null>(null);
+  // Use state managed document and provider for React render cycle
+  const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
+  const [provider, setProvider] = useState<WebsocketProvider | null>(null);
 
   // Initialize Yjs document and WebSocket provider with a small delay to prevent race conditions
   useEffect(() => {
-    setIsReady(false);
-    
     const timeout = setTimeout(() => {
-      const ydoc = new Y.Doc();
-      const provider = new WebsocketProvider(
+      const newYdoc = new Y.Doc();
+      const newProvider = new WebsocketProvider(
         process.env.NEXT_PUBLIC_COLLAB_SERVER_URL || "ws://localhost:1234",
         `note-${noteId}`,
-        ydoc
+        newYdoc
       );
 
-      ydocRef.current = ydoc;
-      providerRef.current = provider;
+      setYdoc(newYdoc);
+      setProvider(newProvider);
 
       const onStatus = (event: { status: string }) => {
         if (event.status === "connected") {
@@ -52,15 +50,15 @@ export function Editor({ noteId }: { noteId: string }) {
         }
       };
 
-      provider.on("status", onStatus);
+      newProvider.on("status", onStatus);
 
       const updateUsers = () => {
-        setConnectedUsers(provider.awareness.getStates().size);
+        setConnectedUsers(newProvider.awareness.getStates().size);
       };
-      provider.awareness.on("change", updateUsers);
+      newProvider.awareness.on("change", updateUsers);
       updateUsers();
 
-      if (provider.wsconnected) {
+      if (newProvider.wsconnected) {
         setIsReady(true);
       }
     }, 150); // 150ms debounce for note switching
@@ -72,16 +70,20 @@ export function Editor({ noteId }: { noteId: string }) {
     return () => {
       clearTimeout(timeout);
       clearTimeout(fallbackTimer);
-      
-      if (providerRef.current) {
-        providerRef.current.disconnect();
-        providerRef.current.destroy();
-      }
-      if (ydocRef.current) {
-        ydocRef.current.destroy();
-      }
-      ydocRef.current = null;
-      providerRef.current = null;
+
+      setProvider((prevProvider) => {
+        if (prevProvider) {
+          prevProvider.disconnect();
+          prevProvider.destroy();
+        }
+        return null;
+      });
+      setYdoc((prevYdoc) => {
+        if (prevYdoc) {
+          prevYdoc.destroy();
+        }
+        return null;
+      });
       setIsReady(false);
       setConnectedUsers(0);
     };
@@ -99,7 +101,7 @@ export function Editor({ noteId }: { noteId: string }) {
   const userName = session?.user?.name || "Anonymous";
 
   // Show loading until WebSocket is connected AND note data is fetched
-  if (!isReady || isLoading || !ydocRef.current || !providerRef.current) {
+  if (!isReady || isLoading || !ydoc || !provider) {
     return (
       <div className="flex-1 p-8 lg:p-16">
         <div className="text-accent animate-pulse text-xs tracking-widest uppercase">
@@ -112,8 +114,8 @@ export function Editor({ noteId }: { noteId: string }) {
   return (
     <CollabEditor
       noteId={noteId}
-      ydoc={ydocRef.current}
-      provider={providerRef.current}
+      ydoc={ydoc}
+      provider={provider}
       connectedUsers={connectedUsers}
       initialContent={initialContent}
       note={note}
